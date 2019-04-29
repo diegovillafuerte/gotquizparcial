@@ -3,6 +3,33 @@ import math
 app = Flask(__name__)
 
 
+@app.route("/", methods=['GET', 'POST'])
+def bienvenida():
+	try:
+		if request.method  == 'POST':
+			nombre = request.form['nombre']
+			return redirect(url_for('iniciaQuiz', name = nombre))
+		else:
+			return render_template("bienvenida.html")
+	except Exception as e:
+		print(e)
+		flash("Ocurrió un error, por favor intentalo de nuevo")
+		return render_template("bienvenida.html")
+
+@app.route("/inicio/<string:name>/", methods=['GET', 'POST'])
+def iniciaQuiz(name):
+	return "Esta función debe contener el quiz"
+
+@app.route("/fin/<string:name>/<string:personaje>/<string:imagen>")
+def finQuiz(name, personaje, imagen):
+	try:
+		return render_template("resultado.html", name = name, personaje = personaje, imagen = imagen)
+	except Exception as e:
+		print(e)
+		print("El error ocurrió en la función finQuiz de main.py")
+		flash("Ocurrió un error, por favor intentalo de nuevo")
+		return render_template("bienvenida.html")
+
 def calculaPersonaje(response):
 	# Calculate Factor I Surgency or Extraversion
 	f1 = 0
@@ -103,18 +130,6 @@ def calculaPersonaje(response):
 		imagen = 'ramsay'
 
 	return personaje, imagen
-
-@app.route("/", methods=['GET', 'POST'])
-def bienvenida():
-	return "Esta función debe pedir su nombre al usuario y redirigirlo al quiz"
-
-@app.route("/inicio/<string:name>/", methods=['GET', 'POST'])
-def iniciaQuiz(name):
-	return "Esta función debe contener el quiz"
-
-@app.route("/fin/<string:name>/<string:personaje>/<string:imagen>")
-def finQuiz(name, personaje, imagen):
-	return "Esta función debe decirle al usuario que personaje es"
 
 if __name__ == "__main__":
 	app.debug = True
